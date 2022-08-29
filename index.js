@@ -19,13 +19,10 @@ app.post('/sign-up', (req, res) => {
     res.send('OK')
 });
 
-app.post('/tweets', (req, res) => {
-    
-    const usuario = usuarios.find(value => value.username === req.body.username);    
-    
+app.post('/tweets', (req, res) => {  
+        
     const novoTweet = {
-        username: req.body.username,
-        avatar: usuario.avatar,      
+        username: req.body.username,              
         tweet: req.body.tweet
     }
     tweets.push(novoTweet);
@@ -35,20 +32,18 @@ app.post('/tweets', (req, res) => {
 
 app.get('/tweets', (req, res) => {
 
-    if (tweets.length <= 10) {
-        const novaLista = [...tweets].reverse();
-        res.send(
-            novaLista
-        )
-    } else {
-        const novaLista = [...tweets].slice(-10).reverse();
-        res.send (
-            novaLista
-        )
-    }    
+    let novosTweets=[];
+
+    for(let i = tweets.length - 1; i > tweets.length -11 && i >=0 ; i--) {
+        const addAvatar =usuarios.find(usuario => tweets[i].username == usuario.username)
+        const avatar = addAvatar.avatar;
+        novosTweets=[...novosTweets, {
+            username: tweets[i].username,
+            avatar: avatar,
+            tweet: tweets[i].tweet
+        }]
+    }
+    res.send(novosTweets)    
 });
-
-app.get('/', (req, res) => {res.send(console.log("Hellos"))});
-
 
 app.listen(5000, () => console.log('listening on port 5000'));
